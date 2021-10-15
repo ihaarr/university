@@ -51,7 +51,14 @@ void shiftOneTime() {
     for(int i = 0; i < size; ++i)
         printf("el%d = %d\n", i, arr[i]);
 }
+
+/*
+*   Дана последовательность целых чисел. Осуществить сдвиг элементов последовательности
+*   - на одну позицию вправо
+*   - на К позиций вправо
+*/
 int main() {
     shiftOneTime();
+    shiftKTimes();
     return 0;
 }

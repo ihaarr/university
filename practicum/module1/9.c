@@ -1,17 +1,21 @@
 #include <stdio.h>
 
+/*
+*   Дано натуральное число n. Определить, есть ли хотя бы одна цифра 9 в записи числа
+*/
 int main() {
-    int n, flag;
+    int n, cn, flag;
     flag = 0;
     printf("Enter n: ");
     scanf("%d", &n);
-    while(n > 0) {
-        if(n % 10 == 9) {
+    cn = n;
+    while(cn > 0) {
+        if(cn % 10 == 9) {
             flag = 1;
             break;
         }
 
-        n /= 10;
+        cn /= 10;
     }
 
     if(flag == 0)

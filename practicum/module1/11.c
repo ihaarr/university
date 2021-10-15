@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+/*
+*   Дан целочисленный массив, состоящий из n элементов. Разменять местами максимальный и минимальный элемент. 
+*/
 int main() {
     int n, indexMin, min, indexMax, max;
     printf("Enter a size of array: ");
@@ -25,6 +28,7 @@ int main() {
         }
     }
 
+    //Меняем местами значения
     arr[indexMin] += arr[indexMax];
     arr[indexMax] = arr[indexMin] - arr[indexMax];
     arr[indexMin] -= arr[indexMax];

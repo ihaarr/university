@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+/*
+*   Дано натуральное число n. Определить, является ли число паллиндроном.
+*/
 int main() {
     int num;
 	
@@ -7,7 +10,7 @@ int main() {
 	scanf("%d", &num);
 
 	int number = num;
-	int backwardNumber = 0;
+	int backwardNumber = 0; //число в обратном порядке
 
 	while (number > 0)
 	{
