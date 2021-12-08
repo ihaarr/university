@@ -6,11 +6,17 @@ const int n = 3;
 //Написать программу транспонирования матрицы
 // a) Результат в другую матрицу
 // b) Результат на место исходной
-int** a(int matrix[n][n]) {
-    int** matrixNew = (int**) malloc(n * sizeof(int));
-    for(int i = 0; i < n; i++) {
-        matrixNew[i] = (int) malloc(sizeof(int));
+int** newMatrix(const int rows, const int columns) {
+    int** matrixNew = (int**) malloc(rows * sizeof(int*));
+    for(int i = 0; i < columns; i++) {
+        matrixNew[i] = (int*) malloc(sizeof(int*));
     }
+    
+    return matrixNew;
+}
+
+int** a(int** matrix, const int n) {
+    int** matrixNew = newMatrix(n, n);
 
     for(int i = 0; i < n; ++i) {
         for(int j = 0; j < n; ++j) {
@@ -21,7 +27,7 @@ int** a(int matrix[n][n]) {
     return matrixNew;
 }
 
-void b(int matrix[n][n]) {
+void b(int** matrix, const int n) {
     for(int i = 0; i < n; ++i) {
         for(int j = i + 1; j < n; ++j) {
             int temp = matrix[j][i];
@@ -31,7 +37,7 @@ void b(int matrix[n][n]) {
     }
 }
 
-void print(int matrix[n][n]) {
+void print(int** matrix, const int n) {
     for(int i = 0; i < n; ++i) {
         for(int j = 0; j < n; ++j) {
             printf("%d ", matrix[i][j]);
@@ -42,7 +48,7 @@ void print(int matrix[n][n]) {
 }
 
 int main() {
-    int arr[n][n];
+    int** arr = newMatrix(n, n);
     for(int i = 0; i < n; ++i) {
         for(int j = 0; j < n; ++j) {
             printf("Enter a el with indexes i = %d j = %d: ", i + 1, j + 1);
@@ -50,8 +56,8 @@ int main() {
         }
     }
 
-    //print(a(arr, n), n);
-    b(arr);
-    print(arr);
+    print(a(arr, n), n);
+    b(arr, n);
+    print(arr, n);
     return 0;
 }
