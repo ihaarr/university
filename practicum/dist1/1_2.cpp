@@ -1,6 +1,8 @@
 #include <iostream>
 
 const int N = 20;
+
+//Дано натуральное число N. Найти все пары взаимно простых чисел, сумма которых равна N.
 bool isSimple(int num)
 {
     for (int i = 2; i < num; i++)

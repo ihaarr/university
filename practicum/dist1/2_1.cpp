@@ -1,5 +1,10 @@
 #include <iostream>
 
+/*
+1.	Написать исполнительную систему «Функции работы со строками», 
+которая включает в себя функции, имитирующие стандартные 
+(strlen(), strcat(),  strcpy(),  strstr(),  strchr(),  strcmp()).
+*/
 int stringlen(const char *str)
 {
     int size = 0;
