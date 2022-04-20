@@ -103,7 +103,9 @@ bool write_to_end(FILE* file, product* prod)
 {
     if (file == NULL) return false;
     fseek(file, 0, SEEK_END);
-    return fwrite(prod, sizeof(product), 1, file);
+    int s = fwrite(prod, sizeof(product), 1, file);
+    fclose(file);
+    return s;
 }
 bool write_to_begin(FILE* file, product* prod)
 {
