@@ -13,17 +13,19 @@ struct btree {
     btree* right;
     char str[32];
 };
-
+void node_free(const btree* node);
 bool tree_is_empty(btree* root);
-void tree_add(btree** root, char* str);
+void tree_add(btree** root, const char* str);
 btree* tree_find(btree** root, const char* str);
 void tree_delete(btree** root, const char* str);
 void tree_preorder(btree** root, tree_visit_f f);
 void tree_inorder(btree** root, tree_visit_f f);
 void tree_postorder(btree** root, tree_visit_f f);
+void tree_free(btree** root);
 
+void node_free(const btree* node) {delete node;}
 bool tree_is_empty(btree* root) { return root == nullptr;}
-void tree_add(btree** root, char* str) {
+void tree_add(btree** root, const char* str) {
     if(root == nullptr) return;
     btree* el = new btree;
     strcpy(el->str, str);
@@ -207,4 +209,5 @@ void tree_postorder(btree** root, tree_visit_f f) {
         }
     }
 }
+void tree_free(btree** root) {tree_postorder(root, node_free);}
 #endif //TEST_TREE_HPP
