@@ -27,7 +27,10 @@ btree** tree_init() {
     *tree = nullptr;
     return tree;
 }
-bool tree_is_empty(btree* root) { return root == nullptr;}
+bool tree_is_empty(btree** root) {
+    if(root == nullptr) true;
+    return *root == nullptr;
+}
 void tree_add(btree** root, const char* str) {
     if(root == nullptr) return;
     btree* el = new btree;
@@ -172,6 +175,7 @@ void tree_preorder(btree** root, tree_visit_f f) {
     }
 }
 void tree_inorder(btree** root, tree_visit_f f) {
+    if(root == nullptr) return;
     if(*root == nullptr) return;
     btree_stack* s = nullptr;
     btree_stack** stack = &s;
@@ -188,6 +192,7 @@ void tree_inorder(btree** root, tree_visit_f f) {
     }
 }
 void tree_postorder(btree** root, tree_visit_f f) {
+    if(root == nullptr) return;
     if(*root == nullptr) return;
     btree_stack* s = nullptr;
     btree_stack** stack = &s;
