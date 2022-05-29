@@ -1,7 +1,3 @@
-//
-// Created by Igor on 27.05.2022.
-//
-
 #ifndef TEST_TREE_HPP
 #define TEST_TREE_HPP
 #include <cstring>
@@ -9,11 +5,13 @@
 typedef void(*tree_visit_f)(const btree*);
 struct btree_stack;
 struct btree {
+    btree* parent;
     btree* left;
     btree* right;
     char str[32];
 };
 void node_free(const btree* node);
+btree** tree_init();
 bool tree_is_empty(btree* root);
 void tree_add(btree** root, const char* str);
 btree* tree_find(btree** root, const char* str);
@@ -24,6 +22,11 @@ void tree_postorder(btree** root, tree_visit_f f);
 void tree_free(btree** root);
 
 void node_free(const btree* node) {delete node;}
+btree** tree_init() {
+    btree** tree = new btree*;
+    *tree = nullptr;
+    return tree;
+}
 bool tree_is_empty(btree* root) { return root == nullptr;}
 void tree_add(btree** root, const char* str) {
     if(root == nullptr) return;
@@ -32,13 +35,14 @@ void tree_add(btree** root, const char* str) {
     el->left = nullptr;
     el->right = nullptr;
     if(*root == nullptr) {
+        el->parent = nullptr;
         *root = el;
         return;
     }
     int len = strlen(str);
     bool to_right = false;
     btree* curr = *root;
-    btree* prev;
+    btree* prev = curr;
     while(curr != nullptr) {
         prev = curr;
         if(strlen(curr->str) <= len) {
@@ -49,6 +53,7 @@ void tree_add(btree** root, const char* str) {
             to_right = false;
         }
     }
+    el->parent = prev;
     if(to_right) {
         prev->right = el;
     } else {
@@ -75,95 +80,90 @@ btree* tree_find(btree** root, const char* str) {
 void tree_delete(btree** root, const char* str) {
     if(root == nullptr) return;
     if(*root == nullptr) return;
-    btree* curr = *root;
-    btree* prev = curr;
-    int len = strlen(str);
-    bool isRight = false;
-    while(curr != nullptr) {
-        if(strcmp(curr->str, str) == 0) {
-            break;
-        }
-        prev = curr;
-        if(strlen(curr->str) < len ) {
-            curr = curr->right;
-            isRight = true;
-        } else {
-            curr = curr->left;
-            isRight = false;
-        }
-    }
-    if(curr == nullptr) return;
-    if(curr == *root) {
-        if(prev->right == nullptr && prev->left == nullptr) {
+    btree* el = tree_find(root, str);
+    if(el == nullptr) return;
+    if(el == *root) {
+        if(el->right == nullptr && el->left == nullptr) {
             *root = nullptr;
+            delete el;
             return;
         }
-        if(prev->right != nullptr && prev->left == nullptr) {
-            *root = prev->right;
+        if(el->right != nullptr && el->left == nullptr) {
+            *root = el->right;
+            el->right->parent = nullptr;
+            delete el;
             return;
         }
-        if(prev->right == nullptr && prev->left != nullptr) {
-            *root = prev->left;
+        if(el->right == nullptr && el->left != nullptr) {
+            *root = el->left;
+            el->left->parent = nullptr;
+            delete el;
             return;
         }
-        btree* del = prev;
-        btree* pr;
-        prev = prev->right;
-        while(prev->left != nullptr) {
-            pr = prev;
-            prev = prev->left;
+        btree* del = el;
+        el = el->right;
+        while(el->left != nullptr) {
+            el = el->left;
         }
-        strcpy(del->str, prev->str);
-        if(del->right == prev) {
+        strcpy(del->str, el->str);
+        if(del->right == el) {
             if(del->right->right != nullptr) {
                 del->right = del->right->right;
             } else {
                 del->right = nullptr;
             }
+            delete el;
         } else {
-            pr->left = nullptr;
+            delete el->parent->left;
+            el->parent->left = nullptr;
         }
-        delete prev;
         return;
     }
-    if(curr->left == nullptr && curr->right == nullptr) {
-        if(isRight) {
-            prev->right = nullptr;
+    if(el->left == nullptr && el->right == nullptr) {
+        if(el->parent->right == el) {
+            el->parent->right = nullptr;
         } else {
-            prev->left = nullptr;
+            el->parent->left = nullptr;
         }
-        delete curr;
+        delete el;
         return;
     } else {
-        if(curr->left == nullptr && curr->right != nullptr) {
-            prev->right = curr->right;
-            delete curr;
+        if(el->left == nullptr && el->right != nullptr) {
+            el->parent->right = el->right;
+            delete el;
             return;
         }
-        if(curr->left != nullptr && curr->right == nullptr){
-            prev->left = curr->left;
-            delete curr;
+        if(el->left != nullptr && el->right == nullptr){
+            el->parent->left = el->left;
+            delete el;
             return;
         }
-        btree* del = curr;
-        btree* pr;
-        prev = prev->right;
-        while(prev->left != nullptr) {
-            pr = prev;
-            prev = prev->left;
+        btree* del = el;
+        el = el->right;
+        while(el->left != nullptr) {
+            el = el->left;
         }
-        strcpy(del->str, prev->str);
-        delete pr->left;
-        pr->left = nullptr;
+        strcpy(del->str, el->str);
+        if(del->right == el) {
+            if(el->right != nullptr) {
+                del->right = el->right;
+            } else {
+                del->right = nullptr;
+            }
+            delete el;
+        } else {
+            delete el->parent->left;
+            el->parent->left = nullptr;
+        }
         return;
     }
 }
 void tree_preorder(btree** root, tree_visit_f f) {
+    if(root == nullptr) return;
     if(*root == nullptr) return;
-    btree_stack* s = nullptr;
-    btree_stack** stack = &s;
-    btree* node;
-    stack_push(stack, *root);
+    btree_stack** stack = stack_init();
+    btree* node = *root;
+    stack_push(stack, node);
     while(!stack_is_empty(stack)) {
         node = stack_pop(stack);
         if(node->right != nullptr) stack_push(stack, node->right);
