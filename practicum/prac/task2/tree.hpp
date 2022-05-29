@@ -28,7 +28,7 @@ btree** tree_init() {
     return tree;
 }
 bool tree_is_empty(btree** root) {
-    if(root == nullptr) true;
+    if(root == nullptr) return true;
     return *root == nullptr;
 }
 void tree_add(btree** root, const char* str) {
