@@ -11,27 +11,27 @@ struct btree {
     char str[32];
 };
 void node_free(const btree* node);
-btree** tree_init();
-bool tree_is_empty(btree* root);
-void tree_add(btree** root, const char* str);
-btree* tree_find(btree** root, const char* str);
-void tree_delete(btree** root, const char* str);
-void tree_preorder(btree** root, tree_visit_f f);
-void tree_inorder(btree** root, tree_visit_f f);
-void tree_postorder(btree** root, tree_visit_f f);
-void tree_free(btree** root);
+btree** btree_init();
+bool btree_is_empty(btree* root);
+void btree_add(btree** root, const char* str);
+btree* btree_find(btree** root, const char* str);
+void btree_delete(btree** root, const char* str);
+void btree_preorder(btree** root, tree_visit_f f);
+void btree_inorder(btree** root, tree_visit_f f);
+void btree_postorder(btree** root, tree_visit_f f);
+void btree_free(btree** root);
 
 void node_free(const btree* node) {delete node;}
-btree** tree_init() {
+btree** btree_init() {
     btree** tree = new btree*;
     *tree = nullptr;
     return tree;
 }
-bool tree_is_empty(btree** root) {
+bool btree_is_empty(btree** root) {
     if(root == nullptr) return true;
     return *root == nullptr;
 }
-void tree_add(btree** root, const char* str) {
+void btree_add(btree** root, const char* str) {
     if(root == nullptr) return;
     btree* el = new btree;
     strcpy(el->str, str);
@@ -63,7 +63,7 @@ void tree_add(btree** root, const char* str) {
         prev->left = el;
     }
 }
-btree* tree_find(btree** root, const char* str) {
+btree* btree_find(btree** root, const char* str) {
     if(root == nullptr) return nullptr;
     if(*root == nullptr) return nullptr;
     int len = strlen(str);
@@ -80,10 +80,10 @@ btree* tree_find(btree** root, const char* str) {
     }
     return nullptr;
 }
-void tree_delete(btree** root, const char* str) {
+void btree_delete(btree** root, const char* str) {
     if(root == nullptr) return;
     if(*root == nullptr) return;
-    btree* el = tree_find(root, str);
+    btree* el = btree_find(root, str);
     if(el == nullptr) return;
     if(el == *root) {
         if(el->right == nullptr && el->left == nullptr) {
@@ -161,7 +161,7 @@ void tree_delete(btree** root, const char* str) {
         return;
     }
 }
-void tree_preorder(btree** root, tree_visit_f f) {
+void btree_preorder(btree** root, tree_visit_f f) {
     if(root == nullptr) return;
     if(*root == nullptr) return;
     btree_stack** stack = stack_init();
@@ -174,7 +174,7 @@ void tree_preorder(btree** root, tree_visit_f f) {
         if(f != nullptr) f(node);
     }
 }
-void tree_inorder(btree** root, tree_visit_f f) {
+void btree_inorder(btree** root, tree_visit_f f) {
     if(root == nullptr) return;
     if(*root == nullptr) return;
     btree_stack* s = nullptr;
@@ -191,7 +191,7 @@ void tree_inorder(btree** root, tree_visit_f f) {
         }
     }
 }
-void tree_postorder(btree** root, tree_visit_f f) {
+void btree_postorder(btree** root, tree_visit_f f) {
     if(root == nullptr) return;
     if(*root == nullptr) return;
     btree_stack* s = nullptr;
@@ -214,5 +214,8 @@ void tree_postorder(btree** root, tree_visit_f f) {
         }
     }
 }
-void tree_free(btree** root) {tree_postorder(root, node_free);}
+void btree_free(btree** root) {
+    btree_postorder(root, node_free);
+    delete root;
+}
 #endif //TEST_TREE_HPP
